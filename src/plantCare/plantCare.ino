@@ -15,7 +15,7 @@
 #define SENSOR_POWER_PIN 2 // Powerpin for moisture sensor
 #define PUMP_CONTROL_PIN 3 // Control pin for the pump
 #define WATERING_TIME 5 //seconds
-#define TIME_BETWEEN_WATERING 60 //min
+#define TIME_BETWEEN_WATERING 60UL //min
 #define WATERING_THRESHOLD 50  // Percent moisture in soild
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -91,15 +91,5 @@ void loop() {
   digitalWrite(PUMP_CONTROL_PIN, LOW);
   number_of_waterings++;
  }
- delay(TIME_BETWEEN_WATERING*1000*60*60);
-} 
-
-/*
-  // Scroll in various directions, pausing in-between:
-  display.startscrollright(0x00, 0x0F);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);
-  display.startscrollleft(0x00, 0x0F);
-  delay(2000);
-  */
+ delay(TIME_BETWEEN_WATERING * 1000UL * 60UL);
+}
