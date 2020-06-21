@@ -91,7 +91,7 @@ void loop() {
   digitalWrite(PUMP_CONTROL_PIN, LOW);
   number_of_waterings++;
  }
- delay(5000);
+ delay(TIME_BETWEEN_WATERING*1000*60*60);
 } 
 
 /*
