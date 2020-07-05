@@ -14,8 +14,9 @@
 #define SENSOR_PIN A0  // Analog input
 #define SENSOR_POWER_PIN 2 // Powerpin for moisture sensor
 #define PUMP_CONTROL_PIN 3 // Control pin for the pump
-#define WATERING_TIME 5 //seconds
-#define TIME_BETWEEN_WATERING 60UL //min
+#define PUMP_PWM_VALUE 150 // 255 is max
+#define WATERING_TIME 3 //seconds
+#define TIME_BETWEEN_WATERING 1UL //min
 #define WATERING_THRESHOLD 50  // Percent moisture in soild
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -62,6 +63,8 @@ void updateMinMoisture(float current_value) {
 void setup() { 
  Serial.begin(9600);
  pinMode(SENSOR_POWER_PIN, OUTPUT);
+ // Set PWM frequency and the PWM pin as output
+ //TCCR2B = TCCR2B & B11111000 | B00000001; // for PWM frequency of 31372.55 Hz
  pinMode(PUMP_CONTROL_PIN, OUTPUT);
  setupDisplay();
 } 
@@ -69,6 +72,7 @@ void setup() {
 void loop() {
  digitalWrite(SENSOR_POWER_PIN, HIGH);
  delay(30);
+ int i = 0;
  sensor_value = 0;
  for (int i = 0; i < SAMPLES_PER_MEASUREMENT; i++) 
  { 
@@ -84,12 +88,15 @@ void loop() {
                 + "Max moisture: " + String(max_moisture_value) + "%\n"
                 + "Min moisture: " + String(min_moisture_value) + "%");
  digitalWrite(SENSOR_POWER_PIN, LOW);
- if(sensor_value <= WATERING_THRESHOLD)
+ if(sensor_value <= WATERING_THRESHOLD and i == 60)
  {
-  digitalWrite(PUMP_CONTROL_PIN, HIGH);
-  delay(WATERING_TIME);
+  analogWrite(PUMP_CONTROL_PIN, PUMP_PWM_VALUE);
+  delay(WATERING_TIME*1000);
   digitalWrite(PUMP_CONTROL_PIN, LOW);
   number_of_waterings++;
+  i = 0;
  }
+ i = i+1;
  delay(TIME_BETWEEN_WATERING * 1000UL * 60UL);
+ //delay(10000);
 }
